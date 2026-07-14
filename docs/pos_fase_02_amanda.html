@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>pos_fase_02_amanda.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> or <div class="page"></div> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="tech-challenge---fase-02">Tech Challenge - Fase 02</h1>
+<h2 id="projeto-togglemaster---conteinerizacao-kubernetes-e-aws">Projeto ToggleMaster - Conteinerizacao, Kubernetes e AWS</h2>
+<h3 id="participantes">Participantes</h3>
+<p>Preencher antes da entrega:</p>
+<pre class="hljs"><code><div>Nome: Amanda Ferreira de Oliveira
+RM: RM371484
+Repositorio: https://github.com/amandafo/POS_FIAP_FASE_02
+Link do video:
+</div></code></pre>
+<h2 id="1-visao-geral-do-projeto">1. Visao Geral do Projeto</h2>
+<p>O objetivo desta fase foi evoluir o projeto ToggleMaster para uma arquitetura conteinerizada, executavel localmente com Docker Compose e implantavel em nuvem usando Kubernetes. O projeto foi estruturado como um ecossistema de cinco microsservicos, cada um com uma responsabilidade especifica dentro do fluxo de feature flags. Alem disso, foram provisionados recursos gerenciados na AWS para substituir os servicos locais usados no ambiente de desenvolvimento.</p>
+<p>Localmente, o ambiente foi executado com Docker Compose, subindo os cinco microsservicos e quatro componentes de infraestrutura: PostgreSQL, Redis, DynamoDB Local e ElasticMQ, que simula o SQS. Na nuvem, esses componentes de infraestrutura nao foram executados como containers dentro do Kubernetes. Em vez disso, foram substituidos por servicos gerenciados da AWS: RDS PostgreSQL, ElastiCache Redis, DynamoDB e SQS. O Kubernetes, no EKS, ficou responsavel apenas por executar os containers dos cinco microsservicos.</p>
+<p>A arquitetura final demonstra uma separacao clara entre aplicacao e infraestrutura. As imagens Docker publicadas no ECR contem apenas os microsservicos. As conexoes com bancos, cache e fila sao configuradas por variaveis de ambiente em manifests Kubernetes, usando <code>ConfigMap</code> e <code>Secret</code>.</p>
+<h2 id="2-microsservicos-implementados">2. Microsservicos Implementados</h2>
+<p>O projeto possui cinco microsservicos principais:</p>
+<table>
+<thead>
+<tr>
+<th>Servico</th>
+<th>Tecnologia</th>
+<th>Responsabilidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>auth-service</code></td>
+<td>Go</td>
+<td>Validacao e administracao de API keys</td>
+</tr>
+<tr>
+<td><code>flag-service</code></td>
+<td>Python Flask</td>
+<td>CRUD de feature flags</td>
+</tr>
+<tr>
+<td><code>targeting-service</code></td>
+<td>Python Flask</td>
+<td>CRUD de regras de segmentacao</td>
+</tr>
+<tr>
+<td><code>evaluation-service</code></td>
+<td>Go</td>
+<td>Avaliacao de flags, uso de cache Redis e envio de eventos para SQS</td>
+</tr>
+<tr>
+<td><code>analytics-service</code></td>
+<td>Python Flask/Worker</td>
+<td>Consumo de eventos da SQS e gravacao no DynamoDB</td>
+</tr>
+</tbody>
+</table>
+<p>O fluxo principal funciona da seguinte forma:</p>
+<pre class="hljs"><code><div>Usuario ou cliente
+  -&gt; evaluation-service
+    -&gt; Redis ElastiCache para cache
+    -&gt; flag-service para obter a flag
+    -&gt; targeting-service para obter a regra
+    -&gt; SQS para publicar evento de avaliacao
+      -&gt; analytics-service consome a mensagem
+        -&gt; DynamoDB armazena evento analitico
+</div></code></pre>
+<p>Os servicos <code>flag-service</code> e <code>targeting-service</code> dependem do <code>auth-service</code> para validar a API key recebida no header <code>Authorization</code>. O <code>evaluation-service</code> usa a chave <code>tm_key_dev_service</code>, previamente cadastrada no banco do <code>auth-service</code>, para consultar os servicos internos.</p>
+<h2 id="3-ambiente-local-com-docker-compose">3. Ambiente Local com Docker Compose</h2>
+<p>Na primeira etapa foi criado um ambiente local completo usando Docker Compose. Esse ambiente permite executar todo o ecossistema na maquina local, sem depender dos recursos da AWS. Ele foi importante para validar os Dockerfiles, as dependencias e a comunicacao entre servicos antes de subir a aplicacao na nuvem.</p>
+<p>No ambiente local, foram executados:</p>
+<pre class="hljs"><code><div>5 microsservicos:
+- auth-service
+- flag-service
+- targeting-service
+- evaluation-service
+- analytics-service
+
+4 componentes de infraestrutura local:
+- PostgreSQL para auth-service
+- PostgreSQL compartilhado para flag-service e targeting-service
+- Redis
+- DynamoDB Local
+- ElasticMQ como substituto local do SQS
+</div></code></pre>
+<p>O <code>docker-compose.yml</code> tambem possui um container auxiliar chamado <code>dynamodb-init</code>, usado apenas para criar a tabela local no DynamoDB Local. Esse container executa sua tarefa e finaliza, por isso ele pode aparecer como finalizado no <code>docker compose ps</code>.</p>
+<h3 id="evidencia---docker-compose-rodando">Evidencia - Docker Compose rodando</h3>
+<p><img src="imagens/parte_local_comprovacao_docker_compose_ps.png" alt="Docker Compose PS"></p>
+<h3 id="evidencia---health-checks-locais">Evidencia - Health checks locais</h3>
+<p><img src="imagens/parte_local_comprovacao_docker_compose_health_check.png" alt="Health checks Docker Compose"></p>
+<h3 id="evidencias---teste-automatizado-local">Evidencias - Teste automatizado local</h3>
+<p>O script <code>scripts/comprovacao-e2e.sh</code> foi criado para validar automaticamente o ambiente local. Ele sobe o Docker Compose, verifica os health checks, cria uma flag, cria uma regra de targeting, chama o <code>evaluation-service</code>, confirma o consumo da mensagem pelo <code>analytics-service</code> e verifica o registro no DynamoDB Local.</p>
+<p><img src="imagens/parte_local_comprovacao_docker_testes_automazidos_1.png" alt="Teste local automatizado 1"></p>
+<p><img src="imagens/parte_local_comprovacao_docker_testes_automazidos_2.png" alt="Teste local automatizado 2"></p>
+<p><img src="imagens/parte_local_comprovacao_docker_testes_automazidos_3.png" alt="Teste local automatizado 3"></p>
+<h2 id="4-conteinerizacao-dos-microsservicos">4. Conteinerizacao dos Microsservicos</h2>
+<p>Cada microsservico recebeu seu proprio Dockerfile. A estrategia foi manter as imagens focadas apenas na aplicacao e suas dependencias, sem embutir configuracoes fixas de ambiente. Assim, a mesma imagem pode ser usada localmente e na AWS, mudando apenas as variaveis de ambiente.</p>
+<p>Exemplo:</p>
+<pre class="hljs"><code><div>Ambiente local:
+AWS_SQS_URL=http://sqs:9324/000000000000/togglemaster-events
+AWS_SQS_ENDPOINT_URL=http://sqs:9324
+AWS_DYNAMODB_ENDPOINT_URL=http://dynamodb:8000
+
+Ambiente AWS:
+AWS_SQS_URL=https://sqs.us-east-1.amazonaws.com/325662539204/togglemaster-events
+Sem AWS_SQS_ENDPOINT_URL
+Sem AWS_DYNAMODB_ENDPOINT_URL
+</div></code></pre>
+<p>Isso evita misturar ambiente local e ambiente cloud. O Docker Compose usa endpoints locais; o Kubernetes usa endpoints reais da AWS.</p>
+<h2 id="5-provisionamento-aws">5. Provisionamento AWS</h2>
+<p>Para a opcao AWS Academy, todos os recursos foram criados manualmente pelo Console da AWS, conforme exigido pelo enunciado. A regiao utilizada foi <code>us-east-1</code>.</p>
+<p>Recursos criados:</p>
+<pre class="hljs"><code><div>EKS cluster: togglemaster-cluster
+Node group: togglemaster-node-group
+ECR repositories: 5 repositorios
+RDS PostgreSQL: 3 instancias
+ElastiCache Redis: 1 cluster
+DynamoDB: 1 tabela
+SQS: 1 fila standard
+</div></code></pre>
+<h2 id="6-eks-e-node-group">6. EKS e Node Group</h2>
+<p>O cluster Kubernetes foi criado usando o Amazon EKS pelo Console AWS, sem utilizar <code>eksctl create cluster</code>, seguindo a orientacao da opcao AWS Academy. O cluster foi criado com a role <code>LabRole</code>. Depois, foi criado um Managed Node Group tambem usando a <code>LabRole</code>, permitindo que os nodes herdassem permissoes da conta do laboratorio.</p>
+<h3 id="evidencia---cluster-eks-ativo">Evidencia - Cluster EKS ativo</h3>
+<p><img src="imagens/partes_aws_comprovacao_eks_cluster_ativo.png" alt="EKS Cluster Ativo"></p>
+<h3 id="evidencia---computacao-do-cluster">Evidencia - Computacao do cluster</h3>
+<p><img src="imagens/partes_aws_comprovacao_eks_cluster_ativo_computacao.png" alt="EKS Computacao"></p>
+<h3 id="evidencia---kubernetes-no-console">Evidencia - Kubernetes no Console</h3>
+<p><img src="imagens/partes_aws_comprovacao_eks_cluster_ativo_computacao_kube.png" alt="EKS Kubernetes"></p>
+<h3 id="evidencia---redes-do-cluster">Evidencia - Redes do cluster</h3>
+<p><img src="imagens/partes_aws_comprovacao_eks_cluster_ativo_redes.png" alt="EKS Redes"></p>
+<h3 id="evidencia---node-group-ativo">Evidencia - Node Group ativo</h3>
+<p><img src="imagens/partes_aws_comprovacao_eks_cluster_node_group_ativo.png" alt="Node Group Ativo"></p>
+<h3 id="evidencia---nodes-e-pods-pelo-terminal">Evidencia - Nodes e pods pelo terminal</h3>
+<p><img src="imagens/partes_aws_comprovacao_terminal_kube_node_and_pods.png" alt="kubectl nodes e pods"></p>
+<h2 id="7-repositorios-ecr-e-publicacao-das-imagens">7. Repositorios ECR e Publicacao das Imagens</h2>
+<p>Foram criados cinco repositorios no Amazon ECR, um para cada microsservico:</p>
+<pre class="hljs"><code><div>auth-service
+flag-service
+targeting-service
+evaluation-service
+analytics-service
+</div></code></pre>
+<p>As imagens foram buildadas localmente, tagueadas com a URI do ECR e publicadas com <code>docker push</code>.</p>
+<p>Fluxo utilizado:</p>
+<pre class="hljs"><code><div>docker build -t auth-service ./auth-service
+docker tag auth-service:latest 325662539204.dkr.ecr.us-east-1.amazonaws.com/auth-service:latest
+docker push 325662539204.dkr.ecr.us-east-1.amazonaws.com/auth-service:latest
+</div></code></pre>
+<p>Esse mesmo processo foi repetido para os cinco servicos. A publicacao foi validada com <code>aws ecr describe-images</code>, confirmando a tag <code>latest</code>, o digest e o horario de publicacao.</p>
+<h3 id="evidencia---ecr">Evidencia - ECR</h3>
+<p><img src="imagens/partes_aws_comprovacao_ecr.png" alt="ECR Repositories"></p>
+<h3 id="evidencia---build-e-push-das-imagens">Evidencia - Build e push das imagens</h3>
+<p><img src="imagens/parte_aws_comprovacao_build_1.png" alt="Build 1"></p>
+<p><img src="imagens/parte_aws_comprovacao_build_2.png" alt="Build 2"></p>
+<h2 id="8-bancos-rds-postgresql">8. Bancos RDS PostgreSQL</h2>
+<p>O enunciado solicitava tres instancias independentes de RDS PostgreSQL. Foram criadas:</p>
+<table>
+<thead>
+<tr>
+<th>RDS</th>
+<th>Banco</th>
+<th>Servico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>togglemaster-auth-db</code></td>
+<td><code>auth_db</code></td>
+<td><code>auth-service</code></td>
+</tr>
+<tr>
+<td><code>togglemaster-flag-db</code></td>
+<td><code>flags_db</code></td>
+<td><code>flag-service</code></td>
+</tr>
+<tr>
+<td><code>togglemaster-targeting-db</code></td>
+<td><code>targeting_db</code></td>
+<td><code>targeting-service</code></td>
+</tr>
+</tbody>
+</table>
+<p>Os scripts SQL de cada servico foram executados nos bancos correspondentes:</p>
+<pre class="hljs"><code><div>auth-service/db/init.sql
+flag-service/db/init.sql
+targeting-service/db/init.sql
+</div></code></pre>
+<p>Essa separacao garante independencia entre os dados de autenticacao, flags e regras de segmentacao.</p>
+<h3 id="evidencia---rds-postgresql">Evidencia - RDS PostgreSQL</h3>
+<p><img src="imagens/partes_aws_comprovacao_postgres_rds.png" alt="RDS PostgreSQL"></p>
+<h2 id="9-elasticache-redis">9. ElastiCache Redis</h2>
+<p>Foi criado um cluster ElastiCache Redis chamado <code>togglemaster-redis</code>, usando Redis OSS, porta <code>6379</code>, modo de cluster desabilitado e node type <code>cache.t4g.micro</code>. O Redis e utilizado pelo <code>evaluation-service</code> para cache das informacoes de flag e targeting.</p>
+<p>Na primeira avaliacao de uma flag, o <code>evaluation-service</code> consulta os servicos internos e grava no Redis. Nas chamadas seguintes, o servico utiliza o cache, o que aparece nos logs como <code>Cache HIT</code>.</p>
+<h3 id="evidencia---elasticache-redis">Evidencia - ElastiCache Redis</h3>
+<p><img src="imagens/partes_aws_comprovacao_redis_elastic_cache.png" alt="ElastiCache Redis"></p>
+<h2 id="10-dynamodb">10. DynamoDB</h2>
+<p>Foi criada a tabela <code>ToggleMasterAnalytics</code> no DynamoDB, com chave de particao:</p>
+<pre class="hljs"><code><div>event_id: String
+</div></code></pre>
+<p>Essa tabela recebe os eventos processados pelo <code>analytics-service</code>. Cada item contem:</p>
+<pre class="hljs"><code><div>event_id
+user_id
+flag_name
+result
+timestamp
+</div></code></pre>
+<h3 id="evidencia---dynamodb">Evidencia - DynamoDB</h3>
+<p><img src="imagens/partes_aws_comprovacao_dynamo.png" alt="DynamoDB"></p>
+<h3 id="evidencia---detalhes-dynamodb">Evidencia - Detalhes DynamoDB</h3>
+<p><img src="imagens/partes_aws_comprovacao_dynamo_detalhes.png" alt="DynamoDB Detalhes"></p>
+<h3 id="evidencia---dados-no-dynamodb-apos-os-testes">Evidencia - Dados no DynamoDB apos os testes</h3>
+<p><img src="imagens/partes_aws_comprovacao_dynamo.png" alt="DynamoDB Dados"></p>
+<h2 id="11-sqs">11. SQS</h2>
+<p>Foi criada uma fila SQS Standard chamada <code>togglemaster-events</code>. Essa fila conecta o <code>evaluation-service</code> ao <code>analytics-service</code>.</p>
+<p>O <code>evaluation-service</code> publica uma mensagem na fila sempre que uma flag e avaliada. O <code>analytics-service</code> fica executando um worker em background, lendo mensagens da fila, processando o payload e gravando o resultado no DynamoDB.</p>
+<h3 id="evidencia---sqs">Evidencia - SQS</h3>
+<p><img src="imagens/partes_aws_comprovacao_sqs.png" alt="SQS"></p>
+<h2 id="12-manifests-kubernetes">12. Manifests Kubernetes</h2>
+<p>Os manifests Kubernetes foram organizados na pasta <code>k8s/</code>. Eles definem namespace, configuracoes, secrets, deployments, services e HPAs.</p>
+<p>Arquivos criados:</p>
+<pre class="hljs"><code><div>k8s/namespace.yaml
+k8s/configmap.yaml
+k8s/secrets.example.yaml
+k8s/secrets.yaml
+k8s/auth-service.yaml
+k8s/flag-service.yaml
+k8s/targeting-service.yaml
+k8s/evaluation-service.yaml
+k8s/analytics-service.yaml
+k8s/evaluation-hpa.yaml
+k8s/analytics-hpa.yaml
+k8s/kustomization.yaml
+</div></code></pre>
+<p>O arquivo <code>k8s/secrets.yaml</code> contem valores reais de senha e credenciais temporarias, por isso foi adicionado ao <code>.gitignore</code>. O arquivo seguro para versionamento e demonstracao e o <code>k8s/secrets.example.yaml</code>.</p>
+<h3 id="evidencia---estrutura-local-dos-manifests">Evidencia - Estrutura local dos manifests</h3>
+<p><img src="imagens/parte_aws_manifesto_estruturacao_pastas_locais.png" alt="Estrutura dos manifests"></p>
+<h3 id="evidencia---namespace-e-kustomization">Evidencia - Namespace e Kustomization</h3>
+<p><img src="imagens/parte_manifesto_kustomization.png" alt="Kustomization"></p>
+<h3 id="evidencia---configmap">Evidencia - ConfigMap</h3>
+<p><img src="imagens/parte_manifesto_configmap.png" alt="ConfigMap"></p>
+<h3 id="evidencia---secrets-example">Evidencia - Secrets Example</h3>
+<p><img src="imagens/parte_manifesto_secrets_example.png" alt="Secrets Example"></p>
+<h3 id="evidencia---auth-service">Evidencia - Auth Service</h3>
+<p><img src="imagens/parte_manifesto_auth_service.png" alt="Auth Service Manifest"></p>
+<h3 id="evidencia---flag-service">Evidencia - Flag Service</h3>
+<p><img src="imagens/parte_manifesto_flag_service.png" alt="Flag Service Manifest"></p>
+<h3 id="evidencia---targeting-service">Evidencia - Targeting Service</h3>
+<p><img src="imagens/parte_manifesto_targeting_services.png" alt="Targeting Service Manifest"></p>
+<h3 id="evidencia---evaluation-service">Evidencia - Evaluation Service</h3>
+<p><img src="imagens/parte_manifesto_evaluation_service.png" alt="Evaluation Service Manifest"></p>
+<h3 id="evidencia---analytics-service">Evidencia - Analytics Service</h3>
+<p><img src="imagens/parte_manifesto_analystics_service.png" alt="Analytics Service Manifest"></p>
+<h2 id="13-deploy-no-kubernetes">13. Deploy no Kubernetes</h2>
+<p>O deploy foi realizado com:</p>
+<pre class="hljs"><code><div>kubectl apply -k k8s
+</div></code></pre>
+<p>Depois da aplicacao dos manifests, os cinco microsservicos ficaram em execucao no namespace <code>togglemaster</code>.</p>
+<h3 id="evidencia---apply-dos-manifests">Evidencia - Apply dos manifests</h3>
+<p><img src="imagens/parte_aws_comprovacao_terminal_kube_ctl_apply.png" alt="kubectl apply"></p>
+<h3 id="evidencia---pods-e-services">Evidencia - Pods e Services</h3>
+<p><img src="imagens/parte_aws_comprovacao_terminal_kube_ctl.png" alt="kubectl get pods e svc"></p>
+<p>O <code>evaluation-service</code> foi exposto com um Service do tipo <code>LoadBalancer</code>, criando uma URL publica na AWS. Os demais servicos foram mantidos como <code>ClusterIP</code>, acessiveis apenas internamente dentro do cluster.</p>
+<h2 id="14-observacao-sobre-nginx-ingress">14. Observacao Sobre Nginx Ingress</h2>
+<p>O enunciado menciona demonstrar uma URL de Load Balancer criada para acesso externo. Nesta implementacao, o ponto de entrada externo foi implementado diretamente com um Service Kubernetes do tipo <code>LoadBalancer</code> para o <code>evaluation-service</code>. Essa abordagem cria um Load Balancer AWS e permite chamadas externas ao endpoint publico do servico.</p>
+<p>Nao foi implantado um Nginx Ingress Controller dedicado nesta etapa. Caso seja exigido estritamente o uso de Nginx Ingress, a evolucao natural seria instalar o <code>ingress-nginx</code>, criar um recurso <code>Ingress</code> apontando para o <code>evaluation-service</code> e demonstrar a chamada pelo Load Balancer do controller. Para a demonstracao atual, o acesso externo foi comprovado pelo LoadBalancer do proprio Service Kubernetes.</p>
+<h2 id="15-horizontal-pod-autoscaler">15. Horizontal Pod Autoscaler</h2>
+<p>Foram criados dois HPAs, conforme requisito:</p>
+<pre class="hljs"><code><div>evaluation-service-hpa
+analytics-service-hpa
+</div></code></pre>
+<p>Ambos foram configurados com:</p>
+<pre class="hljs"><code><div>minReplicas: 1
+maxReplicas: 4
+averageUtilization: 70
+</div></code></pre>
+<p>Tambem foram adicionados <code>resources.requests</code> de CPU nos deployments, pois o HPA precisa desses valores para calcular a porcentagem de uso.</p>
+<h3 id="evidencia---hpa-evaluation-service">Evidencia - HPA Evaluation Service</h3>
+<p><img src="imagens/parte_manifesto_evaluation_hpa.png" alt="Evaluation HPA"></p>
+<h3 id="evidencia---hpa-analytics-service">Evidencia - HPA Analytics Service</h3>
+<p><img src="imagens/parte_manifesto_analystics_hpa.png" alt="Analytics HPA"></p>
+<h3 id="evidencia---hpa-em-execucao">Evidencia - HPA em execucao</h3>
+<p><img src="imagens/parte_aws_teste_hpa.png" alt="Teste HPA"></p>
+<p>Durante a validacao, o metrics-server foi configurado e o HPA passou a exibir valores reais de CPU. No teste automatizado de carga, o <code>evaluation-service</code> escalou para 2 replicas e o <code>analytics-service</code> escalou para 4 replicas.</p>
+<h2 id="16-teste-e2e-em-nuvem">16. Teste E2E em Nuvem</h2>
+<p>Foi criado o script:</p>
+<pre class="hljs"><code><div>scripts/comprovacao-aws-e2e-hpa.sh
+</div></code></pre>
+<p>Esse script automatiza a comprovacao na AWS. Ele executa as seguintes etapas:</p>
+<ol>
+<li>Verifica a autenticacao AWS.</li>
+<li>Lista nodes, pods, services e HPAs.</li>
+<li>Descobre o LoadBalancer do <code>evaluation-service</code>.</li>
+<li>Testa o health publico.</li>
+<li>Testa os servicos internos com um pod temporario de curl.</li>
+<li>Cria uma flag no <code>flag-service</code>.</li>
+<li>Cria uma regra no <code>targeting-service</code>.</li>
+<li>Chama o <code>evaluation-service</code> pelo LoadBalancer.</li>
+<li>Gera carga no <code>evaluation-service</code>.</li>
+<li>Acompanha o HPA e os pods durante a carga.</li>
+<li>Envia mensagens manualmente para a SQS.</li>
+<li>Acompanha o consumo da fila pelo <code>analytics-service</code>.</li>
+<li>Consulta o DynamoDB para comprovar a persistencia dos eventos.</li>
+</ol>
+<h3 id="evidencia---teste-e2e">Evidencia - Teste E2E</h3>
+<p><img src="imagens/parte_aws_teste_e2e.png" alt="Teste E2E"></p>
+<h3 id="evidencia---logs-do-teste-e2e">Evidencia - Logs do teste E2E</h3>
+<p><img src="imagens/parte_aws_teste_e2e_logs.png" alt="Teste E2E Logs"></p>
+<p>O teste comprovou dois grupos de dados no DynamoDB:</p>
+<pre class="hljs"><code><div>Eventos gerados por chamadas reais ao evaluation-service
+Eventos gerados por mensagens enviadas manualmente para a SQS
+</div></code></pre>
+<p>No teste executado, foram validados:</p>
+<pre class="hljs"><code><div>1001 eventos gerados pelo fluxo do evaluation-service
+200 eventos gerados por mensagens manuais na SQS
+</div></code></pre>
+<h2 id="17-interpretacao-da-fila-sqs-com-0-mensagens">17. Interpretacao da Fila SQS com 0 Mensagens</h2>
+<p>Durante a execucao do teste, os atributos da SQS mostraram:</p>
+<pre class="hljs"><code><div>ApproximateNumberOfMessages = 0
+ApproximateNumberOfMessagesNotVisible = 0
+</div></code></pre>
+<p>Isso nao indica falha. Pelo contrario, indica que o <code>analytics-service</code> consumiu as mensagens rapidamente. Como o HPA aumentou o numero de pods do <code>analytics-service</code>, a fila foi drenada antes da consulta de atributos mostrar mensagens acumuladas.</p>
+<p>A comprovacao de uso da fila aparece em tres lugares:</p>
+<pre class="hljs"><code><div>Logs do analytics-service mostrando mensagens recebidas
+Logs do analytics-service mostrando eventos salvos no DynamoDB
+Consulta ao DynamoDB mostrando os 200 registros das mensagens manuais
+</div></code></pre>
+<h2 id="18-escalabilidade-do-analytics-service">18. Escalabilidade do Analytics Service</h2>
+<p>O enunciado permitia HPA por CPU como workaround para o AWS Academy. A estrategia adotada foi:</p>
+<pre class="hljs"><code><div>Quando ha muitas mensagens na SQS, o analytics-service processa mais eventos.
+Esse processamento aumenta o uso de CPU.
+O HPA observa a CPU media dos pods.
+Quando a CPU sobe, o HPA aumenta a quantidade de replicas.
+</div></code></pre>
+<p>Essa abordagem foi escolhida porque o AWS Academy possui restricoes de IAM e integracoes mais avancadas, o que tornaria o uso de KEDA por metrica de fila mais trabalhoso. O HPA por CPU e uma solucao mais simples, compativel com o ambiente do laboratorio e suficiente para demonstrar escalabilidade horizontal.</p>
+<p>No teste, o <code>analytics-service</code> escalou para 4 pods, processou as mensagens da SQS e gravou os dados no DynamoDB.</p>
+<h2 id="19-diferenca-entre-os-data-stores">19. Diferenca Entre os Data Stores</h2>
+<p>O projeto usa tres tipos de armazenamento, cada um com um proposito diferente:</p>
+<h3 id="rds-postgresql">RDS PostgreSQL</h3>
+<p>O RDS foi usado para dados relacionais e operacionais dos microsservicos principais. Cada servico possui seu proprio banco:</p>
+<pre class="hljs"><code><div>auth-service: api keys
+flag-service: feature flags
+targeting-service: regras de segmentacao
+</div></code></pre>
+<p>PostgreSQL foi escolhido porque esses dados possuem estrutura relacional, constraints, identificadores e necessidade de consistencia.</p>
+<h3 id="elasticache-redis">ElastiCache Redis</h3>
+<p>O Redis foi usado como cache no <code>evaluation-service</code>. Ele evita chamadas repetidas ao <code>flag-service</code> e ao <code>targeting-service</code> para flags ja avaliadas recentemente. Isso melhora a latencia e reduz carga sobre os demais servicos.</p>
+<h3 id="dynamodb">DynamoDB</h3>
+<p>O DynamoDB foi usado para dados analiticos gerados por eventos de avaliacao. Esses eventos sao independentes, possuem chave unica (<code>event_id</code>) e podem crescer em volume. DynamoDB e adequado para esse tipo de dado porque oferece baixa latencia, escalabilidade e modelo NoSQL flexivel.</p>
+<h2 id="20-desafios-encontrados">20. Desafios Encontrados</h2>
+<p>Durante a implementacao, alguns desafios importantes apareceram:</p>
+<ol>
+<li><strong>Credenciais do AWS Academy</strong>: as credenciais sao temporarias e precisam ser renovadas. Em alguns momentos houve erro de permissao ou credenciais ausentes.</li>
+<li><strong>LabRole</strong>: no AWS Academy, a <code>LabRole</code> foi usada no cluster e no node group, conforme exigido. Algumas permissoes sao limitadas pelo ambiente do laboratorio.</li>
+<li><strong>Acesso ao EKS via kubectl</strong>: inicialmente houve erro de permissao, mas depois o kubeconfig foi atualizado corretamente.</li>
+<li><strong>Credenciais AWS dentro dos pods</strong>: para permitir acesso a SQS e DynamoDB no ambiente Academy, as credenciais temporarias foram passadas via <code>Secret</code> do Kubernetes.</li>
+<li><strong>Metrics Server</strong>: inicialmente o HPA aparecia como <code>&lt;unknown&gt;</code>. Apos configurar metrics-server, o HPA passou a exibir metricas reais de CPU.</li>
+<li><strong>Nginx Ingress</strong>: a exposicao externa foi feita via Service <code>LoadBalancer</code>, nao via Nginx Ingress Controller dedicado.</li>
+</ol>
+<h2 id="21-scripts-criados">21. Scripts Criados</h2>
+<h3 id="script-local">Script local</h3>
+<pre class="hljs"><code><div>scripts/comprovacao-e2e.sh
+</div></code></pre>
+<p>Valida o ambiente Docker Compose local.</p>
+<h3 id="script-aws">Script AWS</h3>
+<pre class="hljs"><code><div>scripts/comprovacao-aws-e2e-hpa.sh
+</div></code></pre>
+<p>Valida o ambiente EKS/AWS, incluindo LoadBalancer, HPA, SQS e DynamoDB.</p>
+<h2 id="22-comandos-principais-de-evidencia">22. Comandos Principais de Evidencia</h2>
+<h3 id="local">Local</h3>
+<pre class="hljs"><code><div>docker compose up -d --build
+docker compose ps
+./scripts/comprovacao-e2e.sh
+</div></code></pre>
+<h3 id="aws--kubernetes">AWS / Kubernetes</h3>
+<pre class="hljs"><code><div>kubectl get nodes -o wide
+kubectl get pods -n togglemaster -o wide
+kubectl get svc -n togglemaster
+kubectl get hpa -n togglemaster
+./scripts/comprovacao-aws-e2e-hpa.sh
+</div></code></pre>
+<h3 id="dynamodb-1">DynamoDB</h3>
+<pre class="hljs"><code><div>aws dynamodb scan \
+  --region us-east-1 \
+  --table-name ToggleMasterAnalytics \
+  --output table
+</div></code></pre>
+<h2 id="23-conclusao">23. Conclusao</h2>
+<p>Ao final da fase, o projeto ficou conteinerizado, executavel localmente com Docker Compose e implantado em Kubernetes na AWS. As cinco imagens dos microsservicos foram publicadas no ECR e executadas como pods no EKS. Os recursos gerenciados da AWS foram provisionados e integrados com sucesso: RDS para dados relacionais, ElastiCache para cache, SQS para mensageria e DynamoDB para analiticos.</p>
+<p>Tambem foi demonstrada escalabilidade horizontal com HPA em dois servicos principais: <code>evaluation-service</code> e <code>analytics-service</code>. O teste automatizado comprovou o fluxo completo, desde a chamada externa ao LoadBalancer ate a gravacao dos eventos no DynamoDB, incluindo carga, fila SQS, processamento assíncrono e escalabilidade dos pods.</p>
+<p>Com isso, os principais requisitos da Fase 2 foram atendidos: conteinerizacao, execucao local, provisionamento em nuvem, publicacao das imagens, deploy Kubernetes, integracao com servicos AWS, comprovacao E2E e demonstracao de escalabilidade.</p>
+
+</body>
+</html>
