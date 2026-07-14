@@ -1,0 +1,166 @@
+services:
+  auth-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: togglemaster
+      POSTGRES_PASSWORD: togglemaster
+      POSTGRES_DB: auth_db
+    ports:
+      - "15432:5432"
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+      - ./auth-service/db/init.sql:/docker-entrypoint-initdb.d/01-auth-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U togglemaster -d auth_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: togglemaster
+      POSTGRES_PASSWORD: togglemaster
+      POSTGRES_DB: postgres
+    ports:
+      - "15433:5432"
+    volumes:
+      - app-db-data:/var/lib/postgresql/data
+      - ./docker/postgres/app-init.sql:/docker-entrypoint-initdb.d/01-app-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U togglemaster -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "16379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  dynamodb:
+    image: amazon/dynamodb-local:2.5.2
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
+    ports:
+      - "18000:8000"
+
+  dynamodb-init:
+    image: amazon/aws-cli:2.15.57
+    depends_on:
+      - dynamodb
+    environment:
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_DYNAMODB_ENDPOINT_URL: http://dynamodb:8000
+      AWS_DYNAMODB_TABLE: ToggleMasterAnalytics
+    volumes:
+      - ./docker/dynamodb/create-table.sh:/create-table.sh:ro
+    entrypoint: ["/bin/sh", "/create-table.sh"]
+    restart: "no"
+
+  sqs:
+    image: softwaremill/elasticmq-native:1.6.6
+    ports:
+      - "9324:9324"
+      - "9325:9325"
+    volumes:
+      - ./docker/elasticmq/elasticmq.conf:/opt/elasticmq.conf:ro
+
+  auth-service:
+    build:
+      context: ./auth-service
+    environment:
+      PORT: 8001
+      DATABASE_URL: postgres://togglemaster:togglemaster@auth-db:5432/auth_db?sslmode=disable
+      MASTER_KEY: admin-secreto-123
+    ports:
+      - "8001:8001"
+    depends_on:
+      auth-db:
+        condition: service_healthy
+
+  flag-service:
+    build:
+      context: ./flag-service
+    environment:
+      PORT: 8002
+      DATABASE_URL: postgres://togglemaster:togglemaster@app-db:5432/flags_db
+      AUTH_SERVICE_URL: http://auth-service:8001
+    ports:
+      - "8002:8002"
+    depends_on:
+      app-db:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+
+  targeting-service:
+    build:
+      context: ./targeting-service
+    environment:
+      PORT: 8003
+      DATABASE_URL: postgres://togglemaster:togglemaster@app-db:5432/targeting_db
+      AUTH_SERVICE_URL: http://auth-service:8001
+    ports:
+      - "8003:8003"
+    depends_on:
+      app-db:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+
+  evaluation-service:
+    build:
+      context: ./evaluation-service
+    environment:
+      PORT: 8004
+      REDIS_URL: redis://redis:6379
+      FLAG_SERVICE_URL: http://flag-service:8002
+      TARGETING_SERVICE_URL: http://targeting-service:8003
+      SERVICE_API_KEY: tm_key_dev_service
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      AWS_SQS_URL: http://sqs:9324/000000000000/togglemaster-events
+      AWS_SQS_ENDPOINT_URL: http://sqs:9324
+    ports:
+      - "8004:8004"
+    depends_on:
+      redis:
+        condition: service_healthy
+      flag-service:
+        condition: service_started
+      targeting-service:
+        condition: service_started
+      sqs:
+        condition: service_started
+
+  analytics-service:
+    build:
+      context: ./analytics-service
+    environment:
+      PORT: 8005
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      AWS_SQS_URL: http://sqs:9324/000000000000/togglemaster-events
+      AWS_SQS_ENDPOINT_URL: http://sqs:9324
+      AWS_DYNAMODB_TABLE: ToggleMasterAnalytics
+      AWS_DYNAMODB_ENDPOINT_URL: http://dynamodb:8000
+    ports:
+      - "8005:8005"
+    depends_on:
+      sqs:
+        condition: service_started
+      dynamodb-init:
+        condition: service_completed_successfully
+
+volumes:
+  auth-db-data:
+  app-db-data:
