@@ -9,8 +9,7 @@ Preencher antes da entrega:
 ```text
 Nome: Amanda Ferreira de Oliveira
 RM: RM371484
-Discord:
-Repositorio:
+Repositorio: https://github.com/amandafo/POS_FIAP_FASE_02
 Link do video:
 ```
 
