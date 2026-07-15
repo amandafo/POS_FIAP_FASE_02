@@ -10,7 +10,7 @@ Preencher antes da entrega:
 Nome: Amanda Ferreira de Oliveira
 RM: RM371484
 Repositorio: https://github.com/amandafo/POS_FIAP_FASE_02
-Link do video:
+Link do video: https://1drv.ms/v/c/9bd3dfa9a5995552/IQAAxknNuKy2S4LAgRIdPfH6ATf1LanEhKe6ET_94hdyZG4?e=YhLJuS
 ```
 
 ## 1. Visao Geral do Projeto
