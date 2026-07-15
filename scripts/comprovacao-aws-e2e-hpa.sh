@@ -18,6 +18,8 @@ SQS_MESSAGES="${SQS_MESSAGES:-50}"
 WATCH_INTERVAL_SECONDS="${WATCH_INTERVAL_SECONDS:-10}"
 DDB_WAIT_ATTEMPTS="${DDB_WAIT_ATTEMPTS:-18}"
 DDB_WAIT_SECONDS="${DDB_WAIT_SECONDS:-5}"
+AWS_CHECKS_MODE="${AWS_CHECKS_MODE:-cluster}"
+AWS_HELPER_IMAGE="${AWS_HELPER_IMAGE:-325662539204.dkr.ecr.us-east-1.amazonaws.com/analytics-service:latest}"
 
 if [ -z "${LB_URL:-}" ]; then
   LB_HOST="$(kubectl get svc evaluation-service -n "$NAMESPACE" -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
@@ -44,6 +46,28 @@ curl_in_cluster() {
   local pod_name="$1"
   shift
   kubectl run "$pod_name" -n "$NAMESPACE" --rm -i --restart=Never --image=curlimages/curl -- "$@"
+}
+
+aws_python_in_cluster() {
+  local pod_name="$1"
+  local script="$2"
+  local aws_access_key_id
+  local aws_secret_access_key
+  local aws_session_token
+
+  aws_access_key_id="$(kubectl get secret togglemaster-secrets -n "$NAMESPACE" -o jsonpath='{.data.AWS_ACCESS_KEY_ID}' | base64 -d)"
+  aws_secret_access_key="$(kubectl get secret togglemaster-secrets -n "$NAMESPACE" -o jsonpath='{.data.AWS_SECRET_ACCESS_KEY}' | base64 -d)"
+  aws_session_token="$(kubectl get secret togglemaster-secrets -n "$NAMESPACE" -o jsonpath='{.data.AWS_SESSION_TOKEN}' | base64 -d)"
+
+  kubectl run "$pod_name" -n "$NAMESPACE" --rm -i --restart=Never \
+    --image="$AWS_HELPER_IMAGE" \
+    --env="AWS_REGION=${AWS_REGION}" \
+    --env="AWS_SQS_URL=${SQS_QUEUE_URL}" \
+    --env="AWS_DYNAMODB_TABLE=${DYNAMODB_TABLE}" \
+    --env="AWS_ACCESS_KEY_ID=${aws_access_key_id}" \
+    --env="AWS_SECRET_ACCESS_KEY=${aws_secret_access_key}" \
+    --env="AWS_SESSION_TOKEN=${aws_session_token}" \
+    --command -- python -c "$script"
 }
 
 generate_evaluation_load() {
@@ -82,6 +106,32 @@ watch_hpa_while_loading() {
 }
 
 send_manual_sqs_messages() {
+  if [ "$AWS_CHECKS_MODE" = "cluster" ]; then
+    aws_python_in_cluster sqs-send-manual "
+import boto3
+import json
+import os
+from datetime import datetime, timezone
+
+region = os.environ.get('AWS_REGION', '${AWS_REGION}')
+queue_url = os.environ.get('AWS_SQS_URL', '${SQS_QUEUE_URL}')
+sqs = boto3.client('sqs', region_name=region)
+
+for i in range(1, int('${SQS_MESSAGES}') + 1):
+    timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    body = {
+        'user_id': f'manual-sqs-user-${RUN_ID}-{i}',
+        'flag_name': '${MANUAL_SQS_FLAG_NAME}',
+        'result': True,
+        'timestamp': timestamp,
+    }
+    sqs.send_message(QueueUrl=queue_url, MessageBody=json.dumps(body))
+
+print('Mensagens enviadas para SQS via pod temporario:', '${SQS_MESSAGES}')
+"
+    return
+  fi
+
   local i
   for i in $(seq 1 "$SQS_MESSAGES"); do
     local timestamp
@@ -95,6 +145,32 @@ send_manual_sqs_messages() {
   done
 }
 
+show_sqs_attributes() {
+  if [ "$AWS_CHECKS_MODE" = "cluster" ]; then
+    aws_python_in_cluster sqs-attrs "
+import boto3
+import os
+
+region = os.environ.get('AWS_REGION', '${AWS_REGION}')
+queue_url = os.environ.get('AWS_SQS_URL', '${SQS_QUEUE_URL}')
+sqs = boto3.client('sqs', region_name=region)
+attrs = sqs.get_queue_attributes(
+    QueueUrl=queue_url,
+    AttributeNames=['ApproximateNumberOfMessages', 'ApproximateNumberOfMessagesNotVisible'],
+)['Attributes']
+print('ApproximateNumberOfMessages=' + attrs.get('ApproximateNumberOfMessages', '0'))
+print('ApproximateNumberOfMessagesNotVisible=' + attrs.get('ApproximateNumberOfMessagesNotVisible', '0'))
+"
+    return
+  fi
+
+  aws sqs get-queue-attributes \
+    --region "$AWS_REGION" \
+    --queue-url "$SQS_QUEUE_URL" \
+    --attribute-names ApproximateNumberOfMessages ApproximateNumberOfMessagesNotVisible \
+    --output table
+}
+
 wait_for_dynamodb_flag() {
   local flag_name="$1"
   local found=0
@@ -102,14 +178,32 @@ wait_for_dynamodb_flag() {
 
   for attempt in $(seq 1 "$DDB_WAIT_ATTEMPTS"); do
     local count
-    count="$(aws dynamodb scan \
-      --region "$AWS_REGION" \
-      --table-name "$DYNAMODB_TABLE" \
-      --filter-expression "flag_name = :flag" \
-      --expression-attribute-values "{\":flag\":{\"S\":\"${flag_name}\"}}" \
-      --select COUNT \
-      --query Count \
-      --output text)"
+    if [ "$AWS_CHECKS_MODE" = "cluster" ]; then
+      count="$(aws_python_in_cluster "ddb-count-${attempt}" "
+import boto3
+import os
+
+region = os.environ.get('AWS_REGION', '${AWS_REGION}')
+table = os.environ.get('AWS_DYNAMODB_TABLE', '${DYNAMODB_TABLE}')
+db = boto3.client('dynamodb', region_name=region)
+response = db.scan(
+    TableName=table,
+    FilterExpression='flag_name = :flag',
+    ExpressionAttributeValues={':flag': {'S': '${flag_name}'}},
+    Select='COUNT',
+)
+print('COUNT=' + str(response.get('Count', 0)))
+" | awk -F= '/^COUNT=/{print $2}' | tail -n 1)"
+    else
+      count="$(aws dynamodb scan \
+        --region "$AWS_REGION" \
+        --table-name "$DYNAMODB_TABLE" \
+        --filter-expression "flag_name = :flag" \
+        --expression-attribute-values "{\":flag\":{\"S\":\"${flag_name}\"}}" \
+        --select COUNT \
+        --query Count \
+        --output text)"
+    fi
 
     printf 'Tentativa %s/%s: DynamoDB flag_name=%s count=%s\n' "$attempt" "$DDB_WAIT_ATTEMPTS" "$flag_name" "$count"
 
@@ -129,6 +223,29 @@ wait_for_dynamodb_flag() {
 
 show_dynamodb_items() {
   local flag_name="$1"
+  if [ "$AWS_CHECKS_MODE" = "cluster" ]; then
+    aws_python_in_cluster "ddb-items-${flag_name:0:20}" "
+import boto3
+import json
+import os
+
+region = os.environ.get('AWS_REGION', '${AWS_REGION}')
+table = os.environ.get('AWS_DYNAMODB_TABLE', '${DYNAMODB_TABLE}')
+db = boto3.client('dynamodb', region_name=region)
+response = db.scan(
+    TableName=table,
+    FilterExpression='flag_name = :flag',
+    ExpressionAttributeValues={':flag': {'S': '${flag_name}'}},
+)
+print(json.dumps({
+    'Count': response.get('Count', 0),
+    'ScannedCount': response.get('ScannedCount', 0),
+    'ItemsPreview': response.get('Items', [])[:10],
+}, indent=2, default=str))
+"
+    return
+  fi
+
   aws dynamodb scan \
     --region "$AWS_REGION" \
     --table-name "$DYNAMODB_TABLE" \
@@ -160,6 +277,7 @@ LOAD_CONCURRENCY=${LOAD_CONCURRENCY}
 SQS_MESSAGES=${SQS_MESSAGES}
 SQS_QUEUE_URL=${SQS_QUEUE_URL}
 DYNAMODB_TABLE=${DYNAMODB_TABLE}
+AWS_CHECKS_MODE=${AWS_CHECKS_MODE}
 EOF
 
 section "3. Health publico do evaluation-service"
@@ -203,11 +321,7 @@ for attempt in 1 2 3 4 5 6; do
   printf '\n--- Observacao %s/6 (%s) ---\n' "$attempt" "$(date '+%H:%M:%S')"
   kubectl get hpa -n "$NAMESPACE" || true
   kubectl get pods -n "$NAMESPACE" -o wide || true
-  aws sqs get-queue-attributes \
-    --region "$AWS_REGION" \
-    --queue-url "$SQS_QUEUE_URL" \
-    --attribute-names ApproximateNumberOfMessages ApproximateNumberOfMessagesNotVisible \
-    --output table || true
+  show_sqs_attributes || true
   sleep "$WATCH_INTERVAL_SECONDS"
 done
 
